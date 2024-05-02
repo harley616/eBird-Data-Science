@@ -1,3 +1,4 @@
 ebd_US-CO_202001_202312_smp_relMar-2024
-
+node_modules
 bird_data.csv
+__pycache__
