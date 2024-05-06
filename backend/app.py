@@ -6,7 +6,7 @@ import datetime
 from flask import request
 import math
 
-
+# code is at the bottom
 
 # data = pd.read_csv('bird_data.csv')
 countyFeatures = {'Adams': {'Canada Goose': 1.0,
@@ -22379,13 +22379,13 @@ def getTop5Scores(user):
         for index, (bird, user_rating) in enumerate(user.features.items()):
             if user_rating != 0:
                 user_ratings.append(user_rating)
-                county_ratings.append(county.features.get(bird, 0))  # If bird not in county features, use 0
+                county_ratings.append(countyFeatures[county][bird] if bird in countyFeatures[county] else 0)  # If bird not in county features, use 0
         countyScores.append((county, eucDist(user_ratings, county_ratings)))
     countyScores = sorted(countyScores, key = lambda x: x[1], reverse=False)
     # for (county, score) in countyScores[:5]:
     #     print(f'{county.name} score of Canada Goose: {county.features["Canada Goose"]}, Common Raven: {county.features["Common Raven"]}')
     
-    top5 = [x[0].name for x in countyScores[:5]]
+    top5 = [x[0]for x in countyScores[:5]]
     print(top5)
     return top5
 
@@ -22413,8 +22413,8 @@ def getTop5Scores(user):
 # for county in countyFeatures:
 #     county.getFeatures()
 
-counties = countyFeatures.keys()
-birds = list(set(countyFeatures.values()))
+counties = list(countyFeatures.keys())
+birds = list({bird for county in countyFeatures for bird in countyFeatures[county].keys()})
 unique_birds_in_season = birds
 
 
@@ -22440,11 +22440,11 @@ def index():
 
 @app.route('/birds')
 def getBirds():
-    return jsonify(unique_birds_in_season.tolist())
+    return jsonify(unique_birds_in_season)
 
 @app.route('/counties')
 def getCounties():
-    return jsonify(counties.tolist())
+    return jsonify(counties)
 
 # Post the users ratings then return a list of the top 5 counties they should visit
 @app.route('/birds', methods=['POST'])
