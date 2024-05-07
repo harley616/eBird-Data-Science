@@ -7,7 +7,7 @@ function App() {
   const [birds, setBirds] = useState(null);
   const [selectedBirds, setSelectedBirds] = useState({});
   const [topCounties, setTopCounties] = useState([]); // [county, county, county
-  const url = true ? 'http://localhost:5001' : 'http://127.0.0.1:5000';
+  const url = 'http://127.0.0.1:5000';
   useEffect(() => {
     const fetchData = async () => {
       fetch(url + '/birds', {mode: 'cors' }).then(
