@@ -22433,7 +22433,7 @@ app = Flask(__name__, static_folder = '../frontend/build', static_url_path = '/'
 CORS(app)
 # Define a route for the homepage
 
-@app.route('/')
+@app.route('/', methods=['GET', 'HEAD'])
 def index():
     return app.send_static_file('index.html')
 
@@ -22460,5 +22460,5 @@ def updateBirds():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=False, port=5000)
 
