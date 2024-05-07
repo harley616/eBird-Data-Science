@@ -22428,15 +22428,14 @@ unique_birds_in_season = birds
 
 
 # Create a Flask application
-app = Flask(__name__)
+app = Flask(__name__, static_folder = '../frontend/build', static_url_path = '/')
 
 CORS(app)
 # Define a route for the homepage
 
 @app.route('/')
 def index():
-    res = [{'res': 'Hello world'}]
-    return jsonify(res)
+    return app.send_static_file('index.html')
 
 @app.route('/birds')
 def getBirds():
