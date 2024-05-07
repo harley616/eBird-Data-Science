@@ -1,24 +1,26 @@
-# Use an official Python image as the base
-FROM python:3.9
-
-# Set the working directory in the container
+FROM python:3-alpine AS builder
+ 
 WORKDIR /app
-
-# Copy the requirements file to the working directory
+ 
+RUN python3 -m venv venv
+ENV VIRTUAL_ENV=/app/venv
+ENV PATH="$VIRTUAL_ENV/bin:5000"
+ 
 COPY requirements.txt .
-
-# Install any needed dependencies specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code to the working directory
-COPY . .
-
-# Expose port 5000
+RUN pip install -r requirements.txt
+ 
+# Stage 2
+FROM python:3-alpine AS runner
+ 
+WORKDIR /app
+ 
+COPY --from=builder /app/venv venv
+COPY app.py app.py
+ 
+ENV VIRTUAL_ENV=/app/venv
+ENV PATH="$VIRTUAL_ENV/bin:5000"
+ENV FLASK_APP=app/app.py
+ 
 EXPOSE 5000
-
-# Set environment variables
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Command to run the application
-CMD ["flask", "run"]
+ 
+CMD ["gunicorn", "--bind" , ":5000", "--workers", "2", "app:app"]
